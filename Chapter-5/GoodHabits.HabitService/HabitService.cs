@@ -2,7 +2,6 @@ using GoodHabits.HabitService.Dtos;
 using GoodHabits.Database;
 using GoodHabits.Database.Entities;
 using Microsoft.EntityFrameworkCore;
-using GoodHabits.HabitService;
 
 namespace GoodHabits.HabitService;
 
