@@ -39,7 +39,7 @@ public class HabitsController : ControllerBase
     {
         var habit = await _habitService.GetById(id);
         if (habit == null) return NotFound();
-        return Ok(_mapper.Map<HabitDto>(await _habitService.GetById(id)));
+        return Ok(_mapper.Map<HabitDto>(habit));
     }
 
     [HttpGet]
