@@ -22,11 +22,11 @@ public class HabitService : IHabitService
 
     public async Task<IReadOnlyList<Habit>> GetAll() => await _dbContext.Habits!.ToListAsync();
 
-    public async Task<Habit> GetById(int id) =>   await _dbContext.Habits.FindAsync(id);
+    public async Task<Habit?> GetById(int id) => await _dbContext.Habits!.FindAsync(id);
 
     public async Task DeleteById(int id)
     {
-        var habit = await _dbContext.Habits!.FindAsync(id) ?? throw new ArgumentException("User not found");
+        var habit = await _dbContext.Habits!.FindAsync(id) ?? throw new ArgumentException("Habit not found");
         _dbContext.Habits.Remove(habit);
         await _dbContext.SaveChangesAsync();
     }
