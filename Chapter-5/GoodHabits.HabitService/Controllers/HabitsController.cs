@@ -28,11 +28,10 @@ public class HabitsController : ControllerBase
 
     [MapToApiVersion("1.0")]
     [HttpGet("version")]
-    public virtual async Task<IActionResult> GetVersion()
+    public virtual IActionResult GetVersion()
     {
         return Ok("Response from version 1.0");
     }
-
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync(int id)
@@ -62,14 +61,17 @@ public class HabitsController : ControllerBase
             return NotFound();
         }
 
-        return Ok(habit);
+        return Ok(_mapper.Map<HabitDto>(habit));
     }
 
     [HttpPatch("{id}")]
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] JsonPatchDocument<UpdateHabitDto> patch)
     {
         var habit = await _habitService.GetById(id);
-        if (habit == null) return NotFound();
+        if (habit == null)
+        {
+            return NotFound();
+        }
 
         var updateHabitDto = new UpdateHabitDto { Name = habit.Name, Description = habit.Description };
         try
