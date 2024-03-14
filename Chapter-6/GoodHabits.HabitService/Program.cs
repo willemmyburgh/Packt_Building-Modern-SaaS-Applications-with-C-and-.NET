@@ -1,6 +1,5 @@
 using GoodHabits.HabitService;
 using GoodHabits.Database;
-using GoodHabits.HabitService;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc.Versioning;
 
