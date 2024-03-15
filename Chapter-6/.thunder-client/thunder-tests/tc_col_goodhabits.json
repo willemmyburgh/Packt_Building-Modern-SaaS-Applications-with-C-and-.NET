@@ -53,7 +53,7 @@
             "colId": "b64fd9c0-1e21-4114-be2e-6e4eb0f9bd65",
             "containerId": "",
             "name": "GET Habit by id",
-            "url": "http://localhost:5100/gateway/habits/101",
+            "url": "http://localhost:5300/gateway/habits/101",
             "method": "GET",
             "sortNum": 15000,
             "created": "2023-04-28T21:42:17.091Z",
