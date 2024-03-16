@@ -6,7 +6,7 @@ services:
     ports:
       - "9876:1433"
     volumes:
-      - habit-db-volume:/var/lib/mssqlql/data/
+      - habit-db-volume:/var/opt/mssql/
     env_file:
       - sqlserver/sqlserver.env
   dev-env:
