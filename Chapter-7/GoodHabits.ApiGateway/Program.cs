@@ -23,9 +23,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseCors(policy =>
         policy.AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                );
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+    );
 }
 
 app.UseHttpsRedirection();
