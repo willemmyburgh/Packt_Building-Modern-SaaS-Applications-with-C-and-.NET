@@ -1,3 +1,20 @@
 {
-    "thunder-client.requestLayout": "Top/Bottom"
+    "thunder-client.requestLayout": "Top/Bottom",
+    "mssql.connections": [
+        {
+            "server": "sqlserver",
+            "database": "",
+            "authenticationType": "SqlLogin",
+            "user": "sa",
+            "password": "",
+            "emptyPasswordInput": false,
+            "savePassword": true,
+            "profileName": "GoodHabits",
+            "encrypt": "Mandatory",
+            "trustServerCertificate": true,
+            "connectTimeout": 15,
+            "commandTimeout": 30,
+            "applicationName": "vscode-mssql"
+        }
+    ]
 }
