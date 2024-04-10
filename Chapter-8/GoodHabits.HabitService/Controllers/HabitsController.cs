@@ -28,18 +28,17 @@ public class HabitsController : ControllerBase
 
     [MapToApiVersion("1.0")]
     [HttpGet("version")]
-    public virtual async Task<IActionResult> GetVersion()
+    public virtual IActionResult GetVersion()
     {
         return Ok("Response from version 1.0");
     }
-
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync(int id)
     {
         var habit = await _habitService.GetById(id);
         if (habit == null) return NotFound();
-        return Ok(_mapper.Map<HabitDto>(await _habitService.GetById(id)));
+        return Ok(_mapper.Map<HabitDto>(habit));
     }
 
     [HttpGet]
@@ -62,7 +61,7 @@ public class HabitsController : ControllerBase
             return NotFound();
         }
 
-        return Ok(habit);
+        return Ok(_mapper.Map<HabitDto>(habit));
     }
 
     [HttpPatch("{id}")]
