@@ -4,60 +4,70 @@
 <div class="row">
     <div class="col-md-4">
         <h3>Good Habits</h3>
-        <ul class="list-group">
-            @foreach (var habit in GoodHabits)
-            {
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span @onclick="() => ShowDetails(habit)">@habit.Name</span>
-                    <div>
-                        <i class="oi oi-eye mr-2 text-primary" @onclick="() => ShowDetails(habit)"></i>
-                        <i class="oi oi-pencil mr-2 text-primary" @onclick="() => EditHabit(habit)"></i>
-                        <i class="oi oi-trash text-danger" @onclick="() => DeleteHabit(habit)"></i>
-                    </div>
-                </li>
-            }
-        </ul>
-        <button class="btn btn-primary mt-3" @onclick="AddHabit">Add Habit</button>
-
+        @if (GoodHabits != null)
+        {
+            <ul class="list-group">
+                @foreach (var habit in GoodHabits!)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span @onclick="() => ShowDetails(habit)">@habit.Name</span>
+                        <div>
+                            <i class="oi oi-eye mr-2 text-primary" @onclick="() => ShowDetails(habit)"></i>
+                            <i class="oi oi-pencil mr-2 text-primary" @onclick="() => EditHabit(habit)"></i>
+                            <i class="oi oi-trash text-danger" @onclick="() => DeleteHabit(habit)"></i>
+                        </div>
+                    </li>
+                }
+            </ul>
+            <button class="btn btn-primary mt-3" @onclick="AddHabit">Add Habit</button>
+        }
     </div>
     <div class="col-md-8">
         <h3>Habit Details</h3>
         @if (SelectedHabit != null)
-{
-    <div class="card">
-        <div class="card-body">
-            @if (!IsEditing)
-            {
-                <h5 class="card-title">@SelectedHabit.Name</h5>
-                <p class="card-text">@SelectedHabit.Description</p>
-                <button class="btn btn-danger mt-3" @onclick="() => DeleteHabit(SelectedHabit)">Delete Habit</button>
-                <button class="btn btn-primary mt-3" @onclick="() => ShowEditForm()">Edit Habit</button>
-            }
-            else
-            {
-                <form>
-                    <div class="form-group">
-                        <label for="edit-habit-name">Name</label>
-                        <input type="text" class="form-control" id="edit-habit-name" placeholder="Enter habit name" @bind-value="EditingHabit.Name" />
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-habit-description">Description</label>
-                        <textarea class="form-control" id="edit-habit-description" rows="3" @bind="EditingHabit.Description"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-3" @onclick="() => SaveHabit()">Save</button>
-                    <button type="button" class="btn btn-secondary mt-3" @onclick="() => CancelEdit()">Cancel</button>
-                </form>
-            }
-        </div>
-    </div>
-}
+        {
+            <div class="card">
+                <div class="card-body">
+                    @if (!IsEditing)
+                    {
+                        <h5 class="card-title">@SelectedHabit.Name</h5>
+                        <p class="card-text">@SelectedHabit.Description</p>
+                        <button class="btn btn-danger mt-3" @onclick="() => DeleteHabit(SelectedHabit)">Delete Habit</button>
+                        <button class="btn btn-primary mt-3" @onclick="() => ShowEditForm()">Edit Habit</button>
+                    }
+                    else
+                    {
+                        <form>
+                            <div class="form-group">
+                                <label for="edit-habit-name">Name</label>
+                                <input type="text" class="form-control" id="edit-habit-name"
+                                    placeholder="Enter habit name" @bind-value="EditingHabit!.Name"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-habit-description">Description</label>
+                                <textarea class="form-control" id="edit-habit-description"
+                                    rows="3" @bind="EditingHabit!.Description">
+                                </textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3" @onclick="() => SaveHabit()">Save</button>
+                            <button type="button" class="btn btn-secondary mt-3" @onclick="() => CancelEdit()">Cancel</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        }
 
     </div>
 </div>
 
 @code {
     private const string ServiceEndpoint = "http://localhost:5300/gateway/habits";
-    private List<Habit> GoodHabits { get; set; } = new List<Habit>();
+    private List<Habit>? GoodHabits { get; set; } /* = new List<Habit>() {
+        new Habit { Name = "Drink water", Description = "Drink at least 8 glasses of water every day." },
+        new Habit { Name = "Exercise", Description = "Do at least 30 minutes of exercise every day." },
+        new Habit { Name = "Meditation", Description = "Meditate for at least 10 minutes every day." },
+    }; */
     private Habit? SelectedHabit { get; set; }
     private Habit? EditingHabit { get; set; }
     private Habit? AddingHabit { get; set; }
@@ -65,13 +75,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        httpClient.DefaultRequestHeaders.Add("tenant", "CloudSphere");
-        GoodHabits = await httpClient.GetFromJsonAsync<List<Habit>>($"{ServiceEndpoint}");
+        if (!httpClient.DefaultRequestHeaders.Contains("tenant"))
+            httpClient.DefaultRequestHeaders.Add("tenant", "CloudSphere");
+        GoodHabits = await httpClient.GetFromJsonAsync<List<Habit>>($"{ServiceEndpoint}") ?? new List<Habit>();
     }
 
 
     private void ShowDetails(Habit habit)
-    { 
+    {
         SelectedHabit = habit;
         IsEditing = false;
     }
@@ -88,10 +99,12 @@
         var response = await httpClient.PostAsJsonAsync(ServiceEndpoint, newHabit);
         var habit = await response.Content.ReadFromJsonAsync<Habit>();
         // Add the new habit to the list of habits
-        GoodHabits.Add(habit!);
-        SelectedHabit = habit;
+        if (habit != null)
+        {
+            GoodHabits!.Add(habit!);
+            SelectedHabit = habit!;
+        }
     }
-
 
     private void EditHabit(Habit habit)
     {
@@ -111,25 +124,24 @@
 
     private void SaveHabit()
     {
-        httpClient.PutAsJsonAsync($"{ServiceEndpoint}/{EditingHabit!.Id}",
-                EditingHabit);
-        GoodHabits.Add(EditingHabit!);
+        httpClient.PutAsJsonAsync($"{ServiceEndpoint}/{EditingHabit!.Id}", EditingHabit);
+        GoodHabits!.Add(EditingHabit!);
         GoodHabits.Remove(SelectedHabit!);
         IsEditing = false;
-        SelectedHabit = null;
+        SelectedHabit = EditingHabit;
+        EditingHabit = null;
     }
 
     private void CancelEdit()
     {
         IsEditing = false;
         EditingHabit = null;
-        SelectedHabit = null;
     }
 
     private void DeleteHabit(Habit habit)
     {
         httpClient.DeleteAsync($"{ServiceEndpoint}/{habit.Id}");
-        GoodHabits.Remove(habit);
+        GoodHabits!.Remove(habit);
         if (SelectedHabit == habit)
         {
             SelectedHabit = null;
