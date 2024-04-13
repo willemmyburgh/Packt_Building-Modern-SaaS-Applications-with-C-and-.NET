@@ -21,9 +21,9 @@ public class HabitsControllerTests
     }
 
     [Fact]
-    public async Task GetVersion_ReturnsExpectedVersion()
+    public void GetVersion_ReturnsExpectedVersion()
     {
-        var result = await _habitsController.GetVersion();
+        var result = _habitsController.GetVersion();
         var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
         okResult.Value.Should().Be("Response from version 1.0");
     }
